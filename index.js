@@ -1,5 +1,4 @@
 var util = require('util');
-var mssql = require('mssql/msnodesqlv8');
 var Base = require('db-migrate-base');
 var Promise = require('bluebird');
 
@@ -616,8 +615,17 @@ var MssqlDriver = Base.extend({
 Promise.promisifyAll(MssqlDriver);
 
 exports.connect = function (config, intern, callback) {
-  if (!config.connectionString) {
-    throw "connectionString is required for config."
+  let mssql;
+  if (config.connectionString) {
+    mssql = require('mssql/msnodesqlv8');
+  }
+  else
+  {
+    mssql = require('mssql');
+    if (!config.database) {
+      config.database = 'mssql';
+    }
+    config.server = config.server || config.host;
   }
 
   mssql.connect(config)
