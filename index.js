@@ -547,6 +547,7 @@ var MssqlDriver = Base.extend({
   },
 
   close: function (callback) {
+    /* Super bad; creates issues on high concurrency runs
     const promise = new Promise((resolve) => {
       // circumvent Idle connections not being closed by the pool #457
       // https://github.com/tediousjs/node-mssql/issues/457
@@ -558,6 +559,12 @@ var MssqlDriver = Base.extend({
     if (typeof callback === 'function') {
       return Promise.resolve(promise).nodeify(callback);
     } else return Promise.resolve(promise);
+    */
+
+    // replaced with "do nothing":
+    if (typeof callback === 'function') {
+      return callback();
+    }
   },
 
   /**
